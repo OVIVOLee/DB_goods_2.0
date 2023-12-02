@@ -1,11 +1,10 @@
 package com.keyi.db_goods.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.keyi.db_goods.entity.Good;
+import com.keyi.db_goods.entity.GoodStockVo;
 import com.keyi.db_goods.service.GoodService;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,7 @@ public class GoodController {
     @PostMapping
     public boolean save(@RequestBody Good good) {
         QueryWrapper<Good> wrapper = new QueryWrapper<>();
-        wrapper.eq("goodId", good.getGoodId());
+        wrapper.eq("goodName", good.getGoodName());
         if (goodService.exists(wrapper))
             return false;
         else
@@ -32,7 +31,7 @@ public class GoodController {
     @DeleteMapping("/id/{id}")
     public boolean deleteById(@PathVariable Integer id) {
         QueryWrapper<Good> wrapper = new QueryWrapper<>();
-        wrapper.eq("goodId", id);
+        wrapper.eq("gid", id);
         return goodService.remove(wrapper);
     }
 
@@ -47,7 +46,7 @@ public class GoodController {
     @PostMapping("/update")
     public boolean update(@RequestBody Good good) {
         QueryWrapper<Good> wrapper = new QueryWrapper<>();
-        wrapper.eq("goodId", good.getGoodId());
+        wrapper.eq("gid", good.getGid());
         if (goodService.exists(wrapper))
             return goodService.updateById(good);
         else
@@ -60,22 +59,31 @@ public class GoodController {
         return goodService.list();
     }
 
+    // 返回值包括 gid、goodName、goodPrice、goodPlace、stockNum
     @GetMapping("/page")
-    public IPage<Good> getPage(@RequestParam Integer pageNum,
-                               @RequestParam Integer pageSize,
-                               @RequestParam(defaultValue = "") String goodId,
-                               @RequestParam(defaultValue = "") String goodName) {
-        IPage<Good> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<Good> queryWrapper = new QueryWrapper<>();
-        if(!"".equals(goodId))
-        {
-            if(NumberUtils.isParsable(goodId))
-                queryWrapper.eq("goodId",Integer.valueOf(goodId));
-            else
-                queryWrapper.eq("goodId",-1);
-        }
-        if (!"".equals(goodName))
-            queryWrapper.like("goodName", goodName);
-        return goodService.page(page, queryWrapper);
+    public Page<GoodStockVo> getPage(@RequestParam Integer pageNum,
+                                     @RequestParam Integer pageSize,
+                                     @RequestParam(defaultValue = "") String goodId,
+                                     @RequestParam(defaultValue = "") String goodName,
+                                     @RequestParam(defaultValue = "") String goodPlace) {
+        Page<GoodStockVo> iPage = new Page<>(pageNum, pageSize);
+        return goodService.getPageVo(iPage, goodId, goodName, goodPlace);
     }
 }
+//    @GetMapping("/page")
+//    public IPage<Good> getPage(@RequestParam Integer pageNum,
+//                               @RequestParam Integer pageSize,
+//                               @RequestParam(defaultValue = "") String goodId,
+//                               @RequestParam(defaultValue = "") String goodName) {
+//        IPage<Good> page = new Page<>(pageNum, pageSize);
+//        QueryWrapper<Good> queryWrapper = new QueryWrapper<>();
+//        if (!"".equals(goodId)) {
+//            if (NumberUtils.isParsable(goodId))
+//                queryWrapper.eq("gid", Integer.valueOf(goodId));
+//            else
+//                queryWrapper.eq("gid", -1);
+//        }
+//        if (!"".equals(goodName))
+//            queryWrapper.like("goodName", goodName);
+//        return goodService.page(page, queryWrapper);
+//    }

@@ -9,7 +9,7 @@ import lombok.Data;
 @TableName(value = "stock")
 public class Stock {
     @TableId(value = "goodId")
-    private Integer good_id;
+    private Integer goodId;
     @TableField(value = "stockNum")
-    private Integer stock_num;
+    private Integer stockNum;
 }

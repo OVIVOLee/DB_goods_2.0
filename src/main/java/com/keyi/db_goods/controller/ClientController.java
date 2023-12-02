@@ -21,18 +21,19 @@ public class ClientController {
     @PostMapping
     public boolean save(@RequestBody Client client) {
         QueryWrapper<Client> wrapper = new QueryWrapper<>();
-        wrapper.eq("clientId", client.getClientId());
+        wrapper.eq("clientMobile", client.getClientMobile());
         if (clientService.exists(wrapper))
             return false;
-        else
+        else {
             return clientService.save(client);
+        }
     }
 
     // 2、删除
     @DeleteMapping("/id/{id}")
     public boolean deleteById(@PathVariable Integer id) {
         QueryWrapper<Client> wrapper = new QueryWrapper<>();
-        wrapper.eq("clientId", id);
+        wrapper.eq("cid", id);
         return clientService.remove(wrapper);
     }
 
@@ -40,11 +41,19 @@ public class ClientController {
     @PostMapping("/update")
     public boolean update(@RequestBody Client client) {
         QueryWrapper<Client> wrapper = new QueryWrapper<>();
-        wrapper.eq("clientId", client.getClientId());
-        if (clientService.exists(wrapper))
+        wrapper.eq("cid", client.getCid());
+        if (clientService.exists(wrapper)) {    // 判断cid
+            wrapper.clear();
+            wrapper.eq("clientMobile", client.getClientMobile());
+
+            if(clientService.exists(wrapper)){  // 判断是否存在将要修改的clientMobile值
+                wrapper.eq("cid", client.getCid());
+                if(!clientService.exists(wrapper))  // 判断是否可以修改
+                    return false;
+            }
             return clientService.updateById(client);
-        else
-            return false;
+        }
+        return false;
     }
 
     // 4、查询
@@ -56,22 +65,25 @@ public class ClientController {
     @GetMapping("/page")
     public IPage<Client> getPage(@RequestParam Integer pageNum,
                                  @RequestParam Integer pageSize,
-                                 @RequestParam(defaultValue = "") String clientId,
+                                 @RequestParam(defaultValue = "") String cid,
                                  @RequestParam(defaultValue = "") String clientName,
-                                 @RequestParam(defaultValue = "") String clientMobile) {
+                                 @RequestParam(defaultValue = "") String clientMobile,
+                                 @RequestParam(defaultValue = "") String clientEmail) {
         IPage<Client> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Client> queryWrapper = new QueryWrapper<>();
-        if (!"".equals(clientId)) {
-            if (NumberUtils.isParsable(clientId)) {
-                queryWrapper.eq("clientId", Integer.valueOf(clientId));
+        if (!"".equals(cid)) {
+            if (NumberUtils.isParsable(cid)) {
+                queryWrapper.eq("cid", Integer.valueOf(cid));
             } else {
-                queryWrapper.eq("clientId", -1);
+                queryWrapper.eq("cid", -1);
             }
         }
         if (!"".equals(clientName))
             queryWrapper.like("clientName", clientName);
         if (!"".equals(clientMobile))
             queryWrapper.like("clientMobile", clientMobile);
+        if (!"".equals(clientEmail))
+            queryWrapper.like("clientEmail", clientEmail);
         return clientService.page(page, queryWrapper);
     }
 
