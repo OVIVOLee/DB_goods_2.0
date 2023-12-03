@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/Vue_goods/vue/node_modules/
