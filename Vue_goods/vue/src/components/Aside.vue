@@ -6,8 +6,11 @@
            active-text-color="#ffffff"
            :collapse-transition="false"
            :collapse="isCollapse"
-           router="true"
+           router
+           @select="handleSelect"
   >
+
+
 
     <div style="height: 60px; line-height: 60px; text-align: center">
       <img src="../assets/logo.png" alt="" style="width: 20px; position: relative; top: 5px; margin-right: 5px">
@@ -42,12 +45,6 @@
       </template>
     </el-menu-item>
 
-    <el-menu-item style="color: white">
-      <template slot="title">
-        <i class="el-icon-box"></i>
-        <span slot="title">查看库存</span>
-      </template>
-    </el-menu-item>
 
   </el-menu>
 </template>
@@ -58,6 +55,11 @@ export default {
   props: {
     isCollapse: Boolean,
     logoTextShow: Boolean
+  },
+  methods: {
+    handleSelect() {
+
+    }
   }
 }
 </script>

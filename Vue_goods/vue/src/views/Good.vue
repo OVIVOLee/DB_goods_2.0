@@ -1,7 +1,7 @@
 <template>
-  <dic>
-    <h>这是商品界面</h>
-  </dic>
+  <div>
+    <h1>这是商品界面</h1>
+  </div>
 </template>
 
 <script>
