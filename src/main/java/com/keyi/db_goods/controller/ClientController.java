@@ -17,20 +17,25 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    public static final Integer EmptyError = -1; // 缺少必要数据
+    public static final Integer ExistError = -2; // 该客户已存在
+    public static final Integer MobileError=-3; // 电话号码具有唯一性
+    public static final Integer True = 1;
+
     // 1、增加
     @PostMapping
-    public boolean save(@RequestBody Client client) {
+    public int save(@RequestBody Client client) {
         if (client.getClientMobile() == null || client.getClientName() == null)
-            return false;
+            return EmptyError;
         if (client.getClientMobile().isEmpty() || client.getClientName().isEmpty())
-            return false;
+            return EmptyError;
         QueryWrapper<Client> wrapper = new QueryWrapper<>();
         wrapper.eq("clientMobile", client.getClientMobile());
-        if (clientService.exists(wrapper))
-            return false;
-        else {
-            return clientService.save(client);
+        if (!clientService.exists(wrapper)){
+            clientService.save(client);
+            return True;
         }
+        return ExistError;
     }
 
     // 2、删除
@@ -48,21 +53,20 @@ public class ClientController {
 
     // 3、修改
     @PostMapping("/update")
-    public boolean update(@RequestBody Client client) {
-        QueryWrapper<Client> wrapper = new QueryWrapper<>();
-        wrapper.eq("cid", client.getCid());
-        if (clientService.exists(wrapper)) {    // 判断cid
-            wrapper.clear();
-            wrapper.eq("clientMobile", client.getClientMobile());
+    public int update(@RequestBody Client client) {
+        if (client.getClientMobile() != null) {
+            if(!client.getClientMobile().isEmpty()){
 
-            if (clientService.exists(wrapper)) {  // 判断是否存在将要修改的clientMobile值
-                wrapper.eq("cid", client.getCid());
-                if (!clientService.exists(wrapper))  // 判断是否可以修改
-                    return false;
+                QueryWrapper<Client> wrapper = new QueryWrapper<>();
+                wrapper.eq("clientMobile", client.getClientMobile());
+                if(!clientService.exists(wrapper)){
+                    clientService.updateById(client);
+                    return True;
+                }
+                return MobileError;
             }
-            return clientService.updateById(client);
         }
-        return false;
+        return EmptyError;
     }
 
     // 4、查询

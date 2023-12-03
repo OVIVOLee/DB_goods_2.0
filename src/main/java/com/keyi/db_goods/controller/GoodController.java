@@ -16,19 +16,25 @@ public class GoodController {
     @Autowired
     private GoodService goodService;
 
+    public static final int EmptyError = -1; // 缺少必要数据
+    public static final int ExistError = -2; // 该商品名已存在
+    public static final int True = 1;
+
     // 1、增加
     @PostMapping
-    public boolean save(@RequestBody Good good) {
+    public int save(@RequestBody Good good) {
         if (good.getGoodName() == null || good.getGoodPrice() == null)
-            return false;
+            return EmptyError;
         if (good.getGoodName().isEmpty())
-            return false;
+            return EmptyError;
         QueryWrapper<Good> wrapper = new QueryWrapper<>();
         wrapper.eq("goodName", good.getGoodName());
         if (goodService.exists(wrapper))
-            return false;
-        else
-            return goodService.save(good);
+            return ExistError;
+        else{
+            goodService.save(good);
+            return True;
+        }
     }
 
     // 2、删除
@@ -53,13 +59,20 @@ public class GoodController {
 
     // 3、修改
     @PostMapping("/update")
-    public boolean update(@RequestBody Good good) {
+    public int update(@RequestBody Good good) {
+        if (good.getGoodName() == null || good.getGoodPrice() == null)
+            return EmptyError;
+        if (good.getGoodName().isEmpty())
+            return EmptyError;
+
         QueryWrapper<Good> wrapper = new QueryWrapper<>();
-        wrapper.eq("gid", good.getGid());
+        wrapper.eq("goodName", good.getGoodName());
         if (goodService.exists(wrapper))
-            return goodService.updateById(good);
-        else
-            return false;
+        {
+            goodService.updateById(good);
+            return True;
+        }
+        return ExistError;
     }
 
     // 4、查询

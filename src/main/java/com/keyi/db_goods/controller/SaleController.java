@@ -2,13 +2,11 @@ package com.keyi.db_goods.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.keyi.db_goods.entity.Client;
-import com.keyi.db_goods.entity.Good;
-import com.keyi.db_goods.entity.Sale;
-import com.keyi.db_goods.entity.SaleCGVo;
+import com.keyi.db_goods.entity.*;
 import com.keyi.db_goods.service.ClientService;
 import com.keyi.db_goods.service.GoodService;
 import com.keyi.db_goods.service.SaleService;
+import com.keyi.db_goods.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +17,7 @@ import java.util.List;
 public class SaleController {
     public static final Integer numError = -1;// 商品数量错误
     public static final Integer priceError = -2;// 商品价格错误
-    public static final Integer ExistError = -3;
+    public static final Integer DataError = -3;// 数据错误
     public static final Integer True = 1;
     @Autowired
     private SaleService saleService;
@@ -27,6 +25,8 @@ public class SaleController {
     private GoodService goodService;
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private StockService stockService;
 
     // 1、增加
     @PostMapping
@@ -34,7 +34,7 @@ public class SaleController {
         Integer flag = True;
         if (sale.getGoodId() == null || sale.getClientId() == null ||
                 sale.getSaleNum() == null || sale.getSalePrice() == null)
-            flag = ExistError;
+            flag = DataError;
 
         else {
             if (sale.getSaleNum() <= 0)    // 判断一：商品数量大于零
@@ -46,12 +46,18 @@ public class SaleController {
             QueryWrapper<Good> wrapper = new QueryWrapper<>();
             wrapper.eq("gid", sale.getGoodId());
             if (!goodService.exists(wrapper))
-                flag = ExistError;
+                flag = DataError;
             // 判断四：clientId存在
             QueryWrapper<Client> wrapper1 = new QueryWrapper<>();
             wrapper1.eq("cid", sale.getClientId());
             if (!clientService.exists(wrapper1))
-                flag = ExistError;
+                flag = DataError;
+            // 判断五：商品库存
+            QueryWrapper<Stock> wrapper2 = new QueryWrapper<>();
+            wrapper2.eq("goodId",sale.getGoodId());
+            wrapper2.gt("stockNum",sale.getSaleNum());
+            if(!stockService.exists(wrapper2))
+                flag = DataError;
 
             if (flag == True)
                 saleService.save(sale);

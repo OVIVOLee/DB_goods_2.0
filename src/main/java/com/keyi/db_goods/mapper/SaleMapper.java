@@ -2,7 +2,6 @@ package com.keyi.db_goods.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.keyi.db_goods.entity.GoodRestockVo;
 import com.keyi.db_goods.entity.Sale;
 import com.keyi.db_goods.entity.SaleCGVo;
 import org.apache.ibatis.annotations.Select;
