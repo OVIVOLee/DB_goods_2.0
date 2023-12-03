@@ -1,93 +1,28 @@
 <template>
   <div style="height: 100%">
     <el-container style="min-height: 100vh; border: 1px solid #eee">
+
       <el-aside :width="sideWidth + 'px'" style="background-color: rgb(45,113,220);" >
-        <el-menu :default-openeds="['1', '3']" style="min-height: 100%"
-                 background-color="rgb(48, 65, 86)"
-                 text-color="fff"
-                 active-text-color="#ffffff"
-                 :collapse-transition="false"
-                 :collapse="isCollapse"
-        >
-          <div style="height: 60px; line-height: 60px; text-align: center">
-            <img src="../assets/logo.png" alt="" style="width: 20px; position: relative; top: 5px; margin-right: 5px">
-            <b style="color: white" v-show="logoTextShow">商品管理系统</b>
-          </div>
-          <el-submenu index="1">
-            <template slot="title"><i class="el-icon-message"></i>
-              <span slot="title" style="color: #cccccc">导航一</span>
-            </template>
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="1-4-1">选项4-1</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title"><i class="el-icon-menu"></i>
-              <span slot="title" style="color: #cccccc">导航二</span>
-            </template>
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="2-1">选项1</el-menu-item>
-              <el-menu-item index="2-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="2-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="2-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="2-4-1">选项4-1</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title"><i class="el-icon-setting"></i>
-              <span slot="title" style="color: #cccccc">导航三</span>
-            </template>
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="3-1">选项1</el-menu-item>
-              <el-menu-item index="3-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="3-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="3-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="3-4-1">选项4-1</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-        </el-menu>
+        <Aside :isCollapse="isCollapse" :logoTextShow="logoTextShow" />
       </el-aside>
 
+        <div>
+          <headerUnique :collapseBtnClass="collapseBtnClass" :collapse="collapse"/>
+        </div>
+
       <el-container>
-        <el-header style="font-size: 12px; border-bottom: 1px solid #ccc; line-height: 60px; display: flex">
-          <div style="flex: 1; font-size: 18px; display: flex; flex-direction: row; align-items: center">
-            <span :class="collapseBtnClass" style="cursor: pointer" @click="collapse"></span>
-            <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-              <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-            </el-breadcrumb>
-          </div>
-          <el-dropdown style="width: 50px; cursor: pointer">
-            <span>王小虎</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>个人信息</el-dropdown-item>
-              <el-dropdown-item>退出</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+
+        <el-header style="border-bottom: 1px solid #ccc;">
+          <Header />
         </el-header>
 
         <el-main>
 
-          <div style="padding: 10px 0">
+          <div style="padding: 10px 0;">
+            <el-breadcrumb separator="/" style="margin-bottom: 17px">
+              <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+              <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
+            </el-breadcrumb>
             <el-input v-model="cid" style="width: 200px" placeholder="请输入编号" suffix-icon="el-icon-search" class="mr-5"></el-input>
             <el-input v-model="clientName" style="width: 200px" placeholder="请输入姓名" suffix-icon="el-icon-search" class="mr-5"></el-input>
             <el-input v-model="clientMobile" style="width: 200px" placeholder="请输入电话" suffix-icon="el-icon-search" class="mr-5"></el-input>
@@ -188,9 +123,13 @@
 
 <script>
 // @ is an alias to /src
+
+import headerUnique from "@/components/headerUnique.vue";
+import Aside from "@/components/Aside.vue";
 import request from "@/util/request";
+
 export default {
-  name: 'HomeView',
+  name: 'Manage',
   data(){
     console.log(this)
     return {
@@ -220,6 +159,9 @@ export default {
     //请求分页查询数据
     this.load()
   },
+  components: {
+    Aside
+  },
   methods: {
     collapse() {// 点击收缩按钮触发
       this.isCollapse = !this.isCollapse;
@@ -227,7 +169,7 @@ export default {
         this.sideWidth = 64
         this.collapseBtnClass = 'el-icon-s-unfold'
         this.logoTextShow = false
-      }else {
+      } else {
         this.sideWidth = 200
         this.collapseBtnClass = 'el-icon-s-fold'
         this.logoTextShow = true
