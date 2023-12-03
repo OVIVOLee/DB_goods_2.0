@@ -3,7 +3,6 @@ package com.keyi.db_goods.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keyi.db_goods.entity.GoodRestockVo;
-import com.keyi.db_goods.entity.GoodStockVo;
 import com.keyi.db_goods.entity.Restock;
 import com.keyi.db_goods.mapper.RestockMapper;
 import jakarta.annotation.Resource;
@@ -21,7 +20,7 @@ public class RestockService extends ServiceImpl<RestockMapper, Restock> {
         else
             goodName = "%" + goodName + "%";
 
-        Integer reId= null;
+        Integer reId = null;
         if (!"".equals(restockId)) {
             if (NumberUtils.isParsable(restockId)) {
 

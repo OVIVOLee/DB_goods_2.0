@@ -20,6 +20,10 @@ public class ClientController {
     // 1、增加
     @PostMapping
     public boolean save(@RequestBody Client client) {
+        if (client.getClientMobile() == null || client.getClientName() == null)
+            return false;
+        if (client.getClientMobile().isEmpty() || client.getClientName().isEmpty())
+            return false;
         QueryWrapper<Client> wrapper = new QueryWrapper<>();
         wrapper.eq("clientMobile", client.getClientMobile());
         if (clientService.exists(wrapper))
@@ -51,9 +55,9 @@ public class ClientController {
             wrapper.clear();
             wrapper.eq("clientMobile", client.getClientMobile());
 
-            if(clientService.exists(wrapper)){  // 判断是否存在将要修改的clientMobile值
+            if (clientService.exists(wrapper)) {  // 判断是否存在将要修改的clientMobile值
                 wrapper.eq("cid", client.getCid());
-                if(!clientService.exists(wrapper))  // 判断是否可以修改
+                if (!clientService.exists(wrapper))  // 判断是否可以修改
                     return false;
             }
             return clientService.updateById(client);
