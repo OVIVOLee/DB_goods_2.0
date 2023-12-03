@@ -19,6 +19,10 @@ public class GoodController {
     // 1、增加
     @PostMapping
     public boolean save(@RequestBody Good good) {
+        if (good.getGoodName() == null || good.getGoodPrice() == null)
+            return false;
+        if (good.getGoodName().isEmpty())
+            return false;
         QueryWrapper<Good> wrapper = new QueryWrapper<>();
         wrapper.eq("goodName", good.getGoodName());
         if (goodService.exists(wrapper))

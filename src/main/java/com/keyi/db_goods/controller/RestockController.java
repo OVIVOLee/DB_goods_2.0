@@ -28,19 +28,24 @@ public class RestockController {
     @PostMapping
     public Integer save(@RequestBody Restock restock) {
         Integer flag = True;
-        if (restock.getRestockNum() <= 0)
-            flag = numError;
-        if (restock.getRestockPrice() <= 0)
-            flag = priceError;
+        if (restock.getGoodId() == null || restock.getRestockNum() == null ||
+                restock.getRestockPrice() == null)
+            flag = ExistError;
+        else {
+            if (restock.getRestockNum() <= 0)
+                flag = numError;
+            if (restock.getRestockPrice() <= 0)
+                flag = priceError;
 
-        QueryWrapper<Good> wrapper = new QueryWrapper<>();
-        wrapper.eq("gid",restock.getGoodId());
-        if(!goodService.exists(wrapper))
-            flag=ExistError;
+            QueryWrapper<Good> wrapper = new QueryWrapper<>();
+            wrapper.eq("gid", restock.getGoodId());
+            if (!goodService.exists(wrapper))
+                flag = ExistError;
 
 
-        if (flag == True)
-            restockService.save(restock);
+            if (flag == True)
+                restockService.save(restock);
+        }
         return flag;
     }
 
@@ -64,7 +69,7 @@ public class RestockController {
 
     // 4、查询
     @GetMapping("/")
-    public List<Restock> getGoodAll() {
+    public List<Restock> getRestockAll() {
         return restockService.list();
     }
 

@@ -32,23 +32,30 @@ public class SaleController {
     @PostMapping
     public Integer save(@RequestBody Sale sale) {
         Integer flag = True;
-        if (sale.getSaleNum() <= 0)    // 判断一：商品数量大于零
-            flag = numError;
-        if (sale.getSalePrice() <= 0)  // 判断二：商品价格大于零
-            flag = priceError;
-        // 判断三：gid存在
-        QueryWrapper<Good> wrapper = new QueryWrapper<>();
-        wrapper.eq("gid", sale.getGoodId());
-        if (!goodService.exists(wrapper))
-            flag = ExistError;
-        // 判断四：clientId存在
-        QueryWrapper<Client> wrapper1 = new QueryWrapper<>();
-        wrapper1.eq("cid", sale.getClientId());
-        if (!clientService.exists(wrapper1))
+        if (sale.getGoodId() == null || sale.getClientId() == null ||
+                sale.getSaleNum() == null || sale.getSalePrice() == null)
             flag = ExistError;
 
-        if (flag == True)
-            saleService.save(sale);
+        else {
+            if (sale.getSaleNum() <= 0)    // 判断一：商品数量大于零
+                flag = numError;
+            if (sale.getSalePrice() <= 0)  // 判断二：商品价格大于零
+                flag = priceError;
+
+            // 判断三：gid存在
+            QueryWrapper<Good> wrapper = new QueryWrapper<>();
+            wrapper.eq("gid", sale.getGoodId());
+            if (!goodService.exists(wrapper))
+                flag = ExistError;
+            // 判断四：clientId存在
+            QueryWrapper<Client> wrapper1 = new QueryWrapper<>();
+            wrapper1.eq("cid", sale.getClientId());
+            if (!clientService.exists(wrapper1))
+                flag = ExistError;
+
+            if (flag == True)
+                saleService.save(sale);
+        }
         return flag;
     }
 
@@ -63,7 +70,7 @@ public class SaleController {
     // 3、修改
     // 4、查询
     @GetMapping("/")
-    public List<Sale> getGoodAll() {
+    public List<Sale> getSaleAll() {
         return saleService.list();
     }
 

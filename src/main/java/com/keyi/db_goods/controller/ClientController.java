@@ -67,7 +67,7 @@ public class ClientController {
 
     // 4、查询
     @GetMapping("/")
-    public List<Client> getGoodAll() {
+    public List<Client> getClientAll() {
         return clientService.list();
     }
 
