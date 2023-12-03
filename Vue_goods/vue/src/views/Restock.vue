@@ -4,10 +4,8 @@
     <div style="padding: 1px 0px 9px 0px;">
 
       <div>
-        <el-input v-model="cid" style="width: 200px" placeholder="请输入编号" suffix-icon="el-icon-search" class="mr-5"></el-input>
-        <el-input v-model="clientName" style="width: 200px" placeholder="请输入姓名" suffix-icon="el-icon-search" class="mr-5"></el-input>
-        <el-input v-model="clientMobile" style="width: 200px" placeholder="请输入电话" suffix-icon="el-icon-search" class="mr-5"></el-input>
-        <el-input v-model="clientEmail" style="width: 200px" placeholder="请输入邮箱" suffix-icon="el-icon-search" class="mr-5"></el-input>
+        <el-input v-model="restockId" style="width: 200px" placeholder="请输入商品编号" suffix-icon="el-icon-search" class="mr-5"></el-input>
+        <el-input v-model="goodName" style="width: 200px" placeholder="请输入商品名" suffix-icon="el-icon-search" class="mr-5"></el-input>
         <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
         <el-button class="ml-5" type="warning" @click="reset">重置</el-button>
       </div>
@@ -21,21 +19,27 @@
 
     </div>
 
-    <!--          用户信息         -->
+    <!--          商品信息         -->
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column prop="cid" label="账号" width="140">
+      <el-table-column prop="restockId" label="进货编号" width="140">
       </el-table-column>
-      <el-table-column prop="clientName" label="姓名" width="120">
+      <el-table-column prop="goodId" label="商品编号" width="140">
       </el-table-column>
-      <el-table-column prop="clientMobile" label="电话">
+      <el-table-column prop="restockNum" label="进货数量" width="120">
       </el-table-column>
-      <el-table-column prop="clientEmail" label="邮箱">
+      <el-table-column prop="restockPrice" label="进货单价">
+      </el-table-column>
+      <el-table-column prop="restockSum" label="进货总价">
+      </el-table-column>
+      <el-table-column prop="restockDate" label="进货时间">
+      </el-table-column>
+      <el-table-column prop="goodName" label="商品名">
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button type="success" style="margin-left: 61%" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="success" style="margin-left: 17%" @click="handleEdit(scope.row)">编辑</el-button>
           <el-popconfirm
               class="ml-5"
               confirm-button-text='确定'
@@ -43,7 +47,7 @@
               icon="el-icon-info"
               icon-color="red"
               title="您确定删除吗？"
-              @confirm="del(scope.row.cid)"
+              @confirm="del(scope.row.restockId)"
           >
             <el-button type="danger" slot="reference">删除</el-button>
           </el-popconfirm>
@@ -65,16 +69,16 @@
     </div>
 
     <!--          新增用弹窗         -->
-    <el-dialog title="用户信息" :visible.sync="saveDialogFormVisible" width="30%">
+    <el-dialog title="商品信息" :visible.sync="saveDialogFormVisible" width="30%">
       <el-form label-width="80px">
-        <el-form-item label="姓名">
-          <el-input v-model="form.clientName" autocomplete="off"></el-input>
+        <el-form-item label="商品编号">
+          <el-input v-model="form.goodId" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="form.clientMobile" autocomplete="off"></el-input>
+        <el-form-item label="进货数量">
+          <el-input v-model="form.restockNum" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="form.clientEmail" autocomplete="off"></el-input>
+        <el-form-item label="进货单价">
+          <el-input v-model="form.restockPrice" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -86,14 +90,23 @@
     <!--          修改用弹窗         -->
     <el-dialog title="用户信息" :visible.sync="updateDialogFormVisible" width="30%">
       <el-form label-width="80px">
-        <el-form-item label="姓名">
-          <el-input v-model="form.clientName" autocomplete="off"></el-input>
+        <el-form-item label="进货编号">
+          <el-input v-model="form.restockId" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="form.clientMobile" autocomplete="off"></el-input>
+        <el-form-item label="商品编号">
+          <el-input v-model="form.goodId" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="form.clientEmail" autocomplete="off"></el-input>
+        <el-form-item label="进货数量">
+          <el-input v-model="form.restockNum" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="进货单价">
+          <el-input v-model="form.restockPrice" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="进货总价">
+          <el-input v-model="form.restockSum" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="进货日期">
+          <el-input v-model="form.restockDate" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -109,17 +122,20 @@
 import request from "@/util/request";
 
 export default {
-  name: "User",
+  name: "Restock",
   data() {
     return {
       tableData: [],
       total: 0,
       pageNum: 1,
       pageSize: 5,
-      cid: "",
-      clientName: "",
-      clientMobile: "",
-      clientEmail: "",
+      restockId: "",
+      goodId: "",
+      restockNum: "",
+      restockPrice: "",
+      restockSum: "",
+      restockDate: "",
+      goodName: "",
       multipleSelection: [],
       saveDialogFormVisible: false,
       updateDialogFormVisible: false,
@@ -131,37 +147,42 @@ export default {
   },
   methods: {
     load(){
-      request.get("/client/page",{
+      request.get("/restock/page",{
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          cid: this.cid,
-          clientName: this.clientName,
-          clientMobile: this.clientMobile,
-          clientEmail: this.clientEmail
+          restockId: this.restockId,
+          goodName: this.goodName,
         }
       })
-      .then(res => {
-        console.log(res)
-        this.tableData = res.records
-        this.total = res.total
-      })
+          .then(res => {
+            console.log(res)
+            this.tableData = res.records
+            this.total = res.total
+          })
     },
     // 1、增加
     save() {
-      request.post("/client", this.form).then(res => {
-        if (res) {
+      request.post("/restock", this.form).then(res => {
+        if (res == 1) {
           this.$message.success("保存成功")
           this.saveDialogFormVisible = false
           this.load()
-        } else {
-          this.$message.error("保存失败")
+        }
+        else if(res == -1){
+          this.$message.error("商品数量错误")
+        }
+        else if(res == -2){
+          this.$message.error("商品价格错误")
+        }
+        else if(res == -3){
+          this.$message.error("存在错误")
         }
       })
     },
     // 2、删除
-    del(cid) {
-      request.delete("/client/id/" + cid).then(res => {
+    del(restockId) {
+      request.delete("/restock/id/" + restockId).then(res => {
         if(res) {
           this.$message.success("删除成功")
           this.load()
@@ -171,32 +192,34 @@ export default {
       })
     },
     delBatch() {
-      let ids = this.multipleSelection.map(v => v.cid)//[{}, {}, {}] => [1,2,3]
-      request.post("/client/del/batch", ids).then(res => {
+      let ids = this.multipleSelection.map(v => v.restockId)//[{}, {}, {}] => [1,2,3]
+      request.post("/restock/del/batch", ids).then(res => {
         if(res) {
           this.$message.success("批量删除成功")
           this.load()
         } else {
-          this.$message.success("批量删除失败")
+          this.$message.error("批量删除失败")
         }
       })
     },
     // 3、修改
     update() {
-      request.post("/client/update", this.form).then(res => {
+      request.post("/restock/update", this.form).then(res => {
         if (res) {
           this.$message.success("编辑成功")
           this.updateDialogFormVisible = false
         } else {
-          this.$message.error("编辑失败")
+          this.$message.success("编辑失败")
         }
       })
     },
     reset() {
-      this.cid = ""
-      this.clientName = ""
-      this.clientMobile = ""
-      this.clientEmail= ""
+      this.restockId = ""
+      this.goodId = ""
+      this.goodName = ""
+      this.restockNum = ""
+      this.restockPrice= ""
+      this.restockSum= ""
       this.load()
     },
     handleSizeChange(pageSize) {
