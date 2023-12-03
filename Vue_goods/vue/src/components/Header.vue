@@ -5,7 +5,7 @@
       <span :class="collapseBtnClass" style="cursor: pointer" @click="collapse"></span>
 
       <el-breadcrumb separator="/" style="margin-left: 10px; font-size: 15px">
-        <el-breadcrumb-item :to="'/'">用户管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="'/'">管理</el-breadcrumb-item>
         <el-breadcrumb-item>{{ currentPathName }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>

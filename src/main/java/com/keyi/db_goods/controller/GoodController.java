@@ -46,6 +46,11 @@ public class GoodController {
         return goodService.remove(wrapper);
     }
 
+    @PostMapping("/del/batch")//批量删除
+    public boolean deleteBatch(@RequestBody List<Integer> ids) {
+        return goodService.removeBatchByIds(ids);
+    }
+
     // 3、修改
     @PostMapping("/update")
     public boolean update(@RequestBody Good good) {
@@ -67,11 +72,11 @@ public class GoodController {
     @GetMapping("/page")
     public Page<GoodStockVo> getPage(@RequestParam Integer pageNum,
                                      @RequestParam Integer pageSize,
-                                     @RequestParam(defaultValue = "") String goodId,
+                                     @RequestParam(defaultValue = "") String gid,
                                      @RequestParam(defaultValue = "") String goodName,
                                      @RequestParam(defaultValue = "") String goodPlace) {
         Page<GoodStockVo> iPage = new Page<>(pageNum, pageSize);
-        return goodService.getPageVo(iPage, goodId, goodName, goodPlace);
+        return goodService.getPageVo(iPage, gid, goodName, goodPlace);
     }
 }
 //    @GetMapping("/page")

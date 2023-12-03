@@ -31,7 +31,7 @@
       </template>
     </el-menu-item>
 
-    <el-menu-item style="color: white">
+    <el-menu-item style="color: white" index="/restock">
       <template slot="title">
         <i class="el-icon-menu"></i>
         <span slot="title">进货记录</span>

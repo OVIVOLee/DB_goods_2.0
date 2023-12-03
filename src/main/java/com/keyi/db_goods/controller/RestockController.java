@@ -57,6 +57,11 @@ public class RestockController {
         return restockService.remove(wrapper);
     }
 
+    @PostMapping("/del/batch")//批量删除
+    public boolean deleteBatch(@RequestBody List<Integer> ids) {
+        return restockService.removeBatchByIds(ids);
+    }
+
     // 3、修改
     @PostMapping("/update")
     public boolean update(@RequestBody Restock restock) {
