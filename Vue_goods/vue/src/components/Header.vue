@@ -1,0 +1,48 @@
+<template>
+  <div style="font-size: 12px; line-height: 60px; display: flex">
+
+    <div style="flex: 1; font-size: 20px; display: flex; align-items: center">
+      <span :class="collapseBtnClass" style="cursor: pointer" @click="collapse"></span>
+
+      <el-breadcrumb separator="/" style="margin-left: 10px; font-size: 15px">
+        <el-breadcrumb-item :to="'/'">用户管理</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ currentPathName }}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+
+    <el-dropdown style="width: 50px; cursor: pointer">
+      <span>答辩</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>个人信息</el-dropdown-item>
+        <el-dropdown-item>退出</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Header",
+  props: {
+    collapseBtnClass: String,
+    collapse: Boolean,
+  },
+  computed: {
+    currentPathName() {
+      return this.$store.state.currentPathName;  //需要监听的数据
+    }
+  },
+  watch: { //监听路由变化
+    currentPathName (newVal, oldVal) {
+      console.log(newVal)
+    }
+  },
+
+
+}
+</script>
+
+<style scoped>
+
+</style>

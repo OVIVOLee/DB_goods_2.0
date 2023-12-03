@@ -3,13 +3,13 @@ import VueRouter from 'vue-router'
 import Manage from '../views/Manage.vue'
 import User from "@/views/User.vue";
 import Good from "@/views/Good.vue";
+import store from "@/store";
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Manage',
     component: Manage,
     redirect: "/user",
     children: [
@@ -23,6 +23,13 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+//路由守卫
+router.beforeEach((to,from,next) => {
+  localStorage.setItem("currentPathName", to.name)//设置当前路由名称,为了在Header组件中使用
+  store.commit("setPath")
+  next()  //放行路由
 })
 
 export default router
