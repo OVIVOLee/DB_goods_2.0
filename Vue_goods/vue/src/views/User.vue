@@ -15,10 +15,10 @@
       <div style="margin-top: 10px">
         <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
         <el-button type="danger" @click="delBatch">批量删除 <i class="el-icon-remove-outline"></i></el-button>
-        <el-upload action="http://localhost:9090/client/import">
-            <el-button type="primary">导入 <i class="el-icon-bottom"></i></el-button>
+        <el-upload action="http://localhost:9090/client/import" :show-file-list="false" :on-success="handleExcelImportSuccess" style="display: inline-block">
+            <el-button class="ml-5" type="primary">导入<i class="el-icon-bottom"></i></el-button>
         </el-upload>
-        <el-button type="primary" @click="exp">导出 <i class="el-icon-top"></i></el-button>
+        <el-button class="ml-5" type="primary" @click="exp">导出 <i class="el-icon-top"></i></el-button>
       </div>
 
     </div>
@@ -245,7 +245,11 @@ export default {
       return /^\d+$/.test(str);
     },
     exp() {
-      window.open("/client/export")
+      window.open("http://localhost:9090/client/export")
+    },
+    handleExcelImportSuccess() {
+      this.$message.success("导入成功")
+      this.load()
     }
   }
 }

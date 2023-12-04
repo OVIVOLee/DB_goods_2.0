@@ -14,8 +14,10 @@
       <div style="margin-top: 10px">
         <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
         <el-button type="danger" @click="delBatch">批量删除 <i class="el-icon-remove-outline"></i></el-button>
-        <el-button type="primary">导入 <i class="el-icon-bottom"></i></el-button>
-        <el-button type="primary">导出 <i class="el-icon-top"></i></el-button>
+        <el-upload action="http://localhost:9090/sale/import" show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+          <el-button class="ml-5" type="primary">导入 <i class="el-icon-bottom"></i></el-button>
+        </el-upload>
+        <el-button class="ml-5" type="primary" @click="exp">导出 <i class="el-icon-top"></i></el-button>
       </div>
 
     </div>
@@ -28,7 +30,11 @@
       </el-table-column>
       <el-table-column prop="goodId" label="商品编号" width="140">
       </el-table-column>
+      <el-table-column prop="goodName" label="商品名">
+      </el-table-column>
       <el-table-column prop="clientId" label="顾客编号" width="140">
+      </el-table-column>
+      <el-table-column prop="clientName" label="顾客姓名">
       </el-table-column>
       <el-table-column prop="saleSum" label="销售总价" width="120">
       </el-table-column>
@@ -37,10 +43,6 @@
       <el-table-column prop="salePrice" label="销售单价">
       </el-table-column>
       <el-table-column prop="saleDate" label="销售时间">
-      </el-table-column>
-      <el-table-column prop="goodName" label="商品名">
-      </el-table-column>
-      <el-table-column prop="clientName" label="顾客姓名">
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
@@ -246,6 +248,13 @@ export default {
     handleEdit(row) {
       this.form = row
       this.updateDialogFormVisible = true
+    },
+    exp() {
+      window.open("http://localhost:9090/sale/export")
+    },
+    handleExcelImportSuccess() {
+      this.$message.success("导入成功")
+      this.load()
     }
   }
 }
