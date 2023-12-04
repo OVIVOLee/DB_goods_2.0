@@ -9,15 +9,7 @@
         <el-breadcrumb-item>{{ currentPathName }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-
-    <el-dropdown style="width: 50px; cursor: pointer">
-      <span>答辩</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>个人信息</el-dropdown-item>
-        <el-dropdown-item>退出</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-
+      <h1>TheShy</h1>
   </div>
 </template>
 

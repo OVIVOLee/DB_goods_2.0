@@ -98,6 +98,11 @@ public class SaleController {
         return false;
     }
 
+//    @PostMapping("/del/batch")//批量删除
+//    public boolean deleteBatch(@RequestBody List<Integer> ids) {
+//        return saleService.removeBatchByIds(ids);
+//    }
+
     // 3、修改
     // 4、查询
     @GetMapping("/")

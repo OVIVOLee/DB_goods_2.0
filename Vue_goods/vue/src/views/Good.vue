@@ -14,8 +14,10 @@
       <div style="margin-top: 10px">
         <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
         <el-button type="danger" @click="delBatch">批量删除 <i class="el-icon-remove-outline"></i></el-button>
-        <el-button type="primary">导入 <i class="el-icon-bottom"></i></el-button>
-        <el-button type="primary">导出 <i class="el-icon-top"></i></el-button>
+        <el-upload action="http://localhost:9090/good/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+          <el-button class="ml-5" type="primary">导入 <i class="el-icon-bottom"></i></el-button>
+        </el-upload>
+        <el-button class="ml-5" type="primary" @click="exp">导出 <i class="el-icon-top"></i></el-button>
       </div>
 
     </div>
@@ -119,7 +121,7 @@ export default {
       pageSize: 5,
       gid: "",
       goodName: "",
-      goodPrice: "",
+      goodPrice: 1,
       goodPlace: "",
       multipleSelection: [],
       saveDialogFormVisible: false,
@@ -149,15 +151,23 @@ export default {
     },
     // 1、增加
     save() {
-      request.post("/good", this.form).then(res => {
-        if (res) {
-          this.$message.success("保存成功")
-          this.saveDialogFormVisible = false
-          this.load()
-        } else {
-          this.$message.success("保存失败，商品号码已存在")
-        }
-      })
+      if(isFinite(this.form.goodPrice)) {
+        request.post("/good", this.form).then(res => {
+          if (res == 1) {
+            this.$message.success("保存成功")
+            this.saveDialogFormVisible = false
+            this.load()
+          }
+          else if(res == -1) {
+            this.$message.error("商品名和地址不能为空")
+          }
+          else if(res == -2) {
+            this.$message.error("该商品名已存在")
+          }
+        })
+      } else {
+        this.$message.error("价格只能为数字")
+      }
     },
     // 2、删除
     del(gid) {
@@ -183,14 +193,23 @@ export default {
     },
     // 3、修改
     update() {
-      request.post("/good/update", this.form).then(res => {
-        if (res) {
-          this.$message.success("编辑成功")
-          this.updateDialogFormVisible = false
-        } else {
-          this.$message.success("编辑失败")
-        }
-      })
+      if(this.isNumeric(this.form.goodPrice)){
+        request.post("/good/update", this.form).then(res => {
+          if (res == 1) {
+            this.$message.success("编辑成功")
+            this.updateDialogFormVisible = false
+          }
+          else if(res == -1) {
+            this.$message.error("编辑失败")
+          }
+          else if(res == -2) {
+            this.$message.error("该商品已存在")
+          }
+        })
+      } else {
+        this.$message.error("价格只能为数字")
+      }
+
     },
     reset() {
       this.gid = ""
@@ -220,6 +239,16 @@ export default {
     handleEdit(row) {
       this.form = row
       this.updateDialogFormVisible = true
+    },
+    isNumeric(str) {
+      return /^\d+$/.test(str);
+    },
+    exp() {
+      window.open("http://localhost:9090/good/export")
+    },
+    handleExcelImportSuccess() {
+      this.$message.success("导入成功")
+      this.load()
     }
   }
 }

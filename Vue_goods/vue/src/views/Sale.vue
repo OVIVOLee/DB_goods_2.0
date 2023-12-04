@@ -4,8 +4,9 @@
     <div style="padding: 1px 0px 9px 0px;">
 
       <div>
-        <el-input v-model="restockId" style="width: 200px" placeholder="请输入商品编号" suffix-icon="el-icon-search" class="mr-5"></el-input>
+        <el-input v-model="saleId" style="width: 200px" placeholder="请输入销售编号" suffix-icon="el-icon-search" class="mr-5"></el-input>
         <el-input v-model="goodName" style="width: 200px" placeholder="请输入商品名" suffix-icon="el-icon-search" class="mr-5"></el-input>
+        <el-input v-model="clientName" style="width: 200px" placeholder="请输入顾客姓名" suffix-icon="el-icon-search" class="mr-5"></el-input>
         <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
         <el-button class="ml-5" type="warning" @click="reset">重置</el-button>
       </div>
@@ -13,7 +14,7 @@
       <div style="margin-top: 10px">
         <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
         <el-button type="danger" @click="delBatch">批量删除 <i class="el-icon-remove-outline"></i></el-button>
-        <el-upload action="http://localhost:9090/restock/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+        <el-upload action="http://localhost:9090/sale/import" show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
           <el-button class="ml-5" type="primary">导入 <i class="el-icon-bottom"></i></el-button>
         </el-upload>
         <el-button class="ml-5" type="primary" @click="exp">导出 <i class="el-icon-top"></i></el-button>
@@ -25,19 +26,23 @@
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column prop="restockId" label="进货编号" width="140">
+      <el-table-column prop="saleId" label="销售编号" width="140">
       </el-table-column>
       <el-table-column prop="goodId" label="商品编号" width="140">
       </el-table-column>
       <el-table-column prop="goodName" label="商品名">
       </el-table-column>
-      <el-table-column prop="restockNum" label="进货数量" width="120">
+      <el-table-column prop="clientId" label="顾客编号" width="140">
       </el-table-column>
-      <el-table-column prop="restockPrice" label="进货单价">
+      <el-table-column prop="clientName" label="顾客姓名">
       </el-table-column>
-      <el-table-column prop="restockSum" label="进货总价">
+      <el-table-column prop="saleSum" label="销售总价" width="120">
       </el-table-column>
-      <el-table-column prop="restockDate" label="进货时间">
+      <el-table-column prop="saleNum" label="销售数量">
+      </el-table-column>
+      <el-table-column prop="salePrice" label="销售单价">
+      </el-table-column>
+      <el-table-column prop="saleDate" label="销售时间">
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
@@ -49,9 +54,9 @@
               icon="el-icon-info"
               icon-color="red"
               title="您确定删除吗？"
-              @confirm="del(scope.row.restockId)"
+              @confirm="del(scope.row.saleId)"
           >
-            <el-button type="danger" slot="reference" style="margin-left: 57%">删除</el-button>
+            <el-button type="danger" slot="reference">删除</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -76,11 +81,14 @@
         <el-form-item label="商品编号">
           <el-input v-model="form.goodId" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="进货数量">
-          <el-input v-model="form.restockNum" autocomplete="off"></el-input>
+        <el-form-item label="顾客编号">
+          <el-input v-model="form.clientId" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="进货单价">
-          <el-input v-model="form.restockPrice" autocomplete="off"></el-input>
+        <el-form-item label="销售数量">
+          <el-input v-model="form.saleNum" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="销售单价">
+          <el-input v-model="form.salePrice" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -118,20 +126,22 @@
 import request from "@/util/request";
 
 export default {
-  name: "Restock",
+  name: "Sale",
   data() {
     return {
       tableData: [],
       total: 0,
       pageNum: 1,
       pageSize: 5,
-      restockId: "",
+      saleId: "",
       goodId: "",
-      restockNum: "",
-      restockPrice: "",
-      restockSum: "",
-      restockDate: "",
       goodName: "",
+      clientId: "",
+      clientName: "",
+      saleSum: "",
+      saleNum: "",
+      salePrice: "",
+      saleDate: "",
       multipleSelection: [],
       saveDialogFormVisible: false,
       updateDialogFormVisible: false,
@@ -143,12 +153,13 @@ export default {
   },
   methods: {
     load(){
-      request.get("/restock/page",{
+      request.get("/sale/page",{
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          restockId: this.restockId,
+          saleId: this.saleId,
           goodName: this.goodName,
+          clientName: this.clientName,
         }
       })
           .then(res => {
@@ -159,7 +170,7 @@ export default {
     },
     // 1、增加
     save() {
-      request.post("/restock", this.form).then(res => {
+      request.post("/sale", this.form).then(res => {
         if (res == 1) {
           this.$message.success("保存成功")
           this.saveDialogFormVisible = false
@@ -172,13 +183,13 @@ export default {
           this.$message.error("商品价格错误")
         }
         else if(res == -3){
-          this.$message.error("该商品不存在")
+          this.$message.error("数据错误")
         }
       })
     },
     // 2、删除
-    del(restockId) {
-      request.delete("/restock/id/" + restockId).then(res => {
+    del(saleId) {
+      request.delete("/sale/id/" + saleId).then(res => {
         if(res) {
           this.$message.success("删除成功")
           this.load()
@@ -188,8 +199,8 @@ export default {
       })
     },
     delBatch() {
-      let ids = this.multipleSelection.map(v => v.restockId)//[{}, {}, {}] => [1,2,3]
-      request.post("/restock/del/batch", ids).then(res => {
+      let ids = this.multipleSelection.map(v => v.saleId)//[{}, {}, {}] => [1,2,3]
+      request.post("/sale/del/batch", ids).then(res => {
         if(res) {
           this.$message.success("批量删除成功")
           this.load()
@@ -211,12 +222,9 @@ export default {
     //   })
     // },
     reset() {
-      this.restockId = ""
-      this.goodId = ""
+      this.saleId = ""
       this.goodName = ""
-      this.restockNum = ""
-      this.restockPrice= ""
-      this.restockSum= ""
+      this.clientName = ""
       this.load()
     },
     handleSizeChange(pageSize) {
@@ -242,7 +250,7 @@ export default {
       this.updateDialogFormVisible = true
     },
     exp() {
-      window.open("http://localhost:9090/restock/export")
+      window.open("http://localhost:9090/sale/export")
     },
     handleExcelImportSuccess() {
       this.$message.success("导入成功")
