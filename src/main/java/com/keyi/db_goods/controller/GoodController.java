@@ -150,6 +150,11 @@ public class GoodController {
         List<Good> goods = CollUtil.newArrayList();
         Integer count = null;
         for (List<Object> row1 : list) {
+            if(row1.get(0).toString()==null||row1.get(1).toString()==null)
+                return false;
+            if(row1.get(0).toString().isEmpty()||row1.get(1).toString().isEmpty())
+                return false;
+
             count = 0;
             for (List<Object> row2 : list) {
                 if (row1.get(0).toString().equals(row2.get(0).toString()))
@@ -167,12 +172,16 @@ public class GoodController {
             Good good = new Good();
             good.setGoodName(row.get(0).toString());
             try {
-                double num = Double.parseDouble(row.get(1).toString());
-                good.setGoodPrice(Double.valueOf(row.get(1).toString()));
+                Double num = Double.parseDouble(row.get(1).toString());
+                good.setGoodPrice(num);
             } catch (NumberFormatException e) {
                 return false;
             }
-            good.setGoodPlace(row.get(2).toString());
+            if(row.get(2).toString()!=null){
+                if(!row.get(2).toString().isEmpty()){
+                    good.setGoodPlace(row.get(2).toString());
+                }
+            }
             goods.add(good);
         }
 

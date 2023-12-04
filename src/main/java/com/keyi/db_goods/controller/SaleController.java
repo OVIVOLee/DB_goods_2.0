@@ -171,6 +171,13 @@ public class SaleController {
         Integer num3 = null;
         Double num4 = null;
         for (List<Object> row : list) {
+            if(row.get(0).toString()==null||row.get(1).toString()==null||
+                    row.get(2).toString()==null||row.get(3).toString()==null)
+                return false;
+            if(row.get(0).toString().isEmpty()||row.get(1).toString().isEmpty()||
+                    row.get(2).toString().isEmpty()||row.get(3).toString().isEmpty())
+                return false;
+
             // 1、类型判断
             try {
                 num1 = Integer.parseInt(row.get(0).toString());

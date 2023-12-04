@@ -159,6 +159,11 @@ public class ClientController {
         List<Client> clients = CollUtil.newArrayList();
         Integer count = null;
         for (List<Object> row1 : list) {
+            if(row1.get(0).toString()==null||row1.get(1).toString()==null)
+                return false;
+            if(row1.get(0).toString().isEmpty()||row1.get(1).toString().isEmpty())
+                return false;
+
             count = 0;
             for (List<Object> row2 : list) {
                 if (row1.get(1).toString().equals(row2.get(1).toString()))
@@ -176,7 +181,12 @@ public class ClientController {
             Client client = new Client();
             client.setClientName(row.get(0).toString());
             client.setClientMobile(row.get(1).toString());
-            client.setClientEmail(row.get(2).toString());
+            if(row.get(2).toString()!=null)
+            {
+                if(!row.get(2).toString().isEmpty()){
+                    client.setClientEmail(row.get(2).toString());
+                }
+            }
             clients.add(client);
         }
 

@@ -156,6 +156,13 @@ public class RestockController {
         Integer num2 = null;
         Double num3 = null;
         for (List<Object> row : list) {
+            if(row.get(0).toString()==null||row.get(1).toString()==null||
+                    row.get(2).toString()==null)
+                return false;
+            if(row.get(0).toString().isEmpty()||row.get(1).toString().isEmpty()||
+                    row.get(2).toString().isEmpty())
+                return false;
+
             // 1、类型判断
             try {
                 num1 = Integer.parseInt(row.get(0).toString());
