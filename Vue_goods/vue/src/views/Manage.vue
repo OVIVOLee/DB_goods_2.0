@@ -30,6 +30,7 @@ import Aside from "@/components/Aside.vue";
 import User from "@/views/User.vue";
 import Good from "@/views/Good.vue";
 import Restock from "@/views/Restock.vue";
+import Sale from "@/views/Sale.vue";
 
 export default {
   name: 'Manage',
@@ -47,7 +48,8 @@ export default {
     Header,
     User,
     Good,
-    Restock
+    Restock,
+    Sale
   },
   methods: {
     collapse() {// 点击收缩按钮触发

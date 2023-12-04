@@ -149,15 +149,28 @@ export default {
     },
     // 1、增加
     save() {
-      request.post("/client", this.form).then(res => {
-        if (res) {
-          this.$message.success("保存成功")
-          this.saveDialogFormVisible = false
-          this.load()
-        } else {
-          this.$message.error("保存失败")
-        }
-      })
+      if(isFinite(this.form.clientMobile))
+      {
+        request.post("/client", this.form).then(res => {
+          if (res ==  1) {
+            this.$message.success("保存成功")
+            this.saveDialogFormVisible = false
+            this.load()
+          }
+          else if(res ==  -1) {
+            this.$message.error("请输入姓名")
+          }
+          else if(res ==  -2) {
+            this.$message.error("该客户已存在")
+          }
+          else if(res ==  -3) {
+            this.$message.error("电话号码具有唯一性")
+          }
+        })
+      } else {
+        this.$message.error("请输入正确的电话号码")
+      }
+
     },
     // 2、删除
     del(cid) {
@@ -170,7 +183,7 @@ export default {
         }
       })
     },
-    delBatch() {
+    delBatch() {//批量删除
       let ids = this.multipleSelection.map(v => v.cid)//[{}, {}, {}] => [1,2,3]
       request.post("/client/del/batch", ids).then(res => {
         if(res) {
@@ -183,15 +196,20 @@ export default {
     },
     // 3、修改
     update() {
-      request.post("/client/update", this.form).then(res => {
-        if (res) {
-          this.$message.success("编辑成功")
-          this.updateDialogFormVisible = false
-        } else {
-          this.$message.error("编辑失败")
-        }
-      })
+      if(this.isNumeric(this.form.clientMobile)){
+        request.post("/client/update", this.form).then(res => {
+          if (res) {
+            this.$message.success("编辑成功")
+            this.updateDialogFormVisible = false
+          } else {
+            this.$message.error("编辑失败")
+          }
+        })
+      } else {
+        this.$message.error("电话号码只能为数字")
+      }
     },
+    // 重置
     reset() {
       this.cid = ""
       this.clientName = ""
@@ -220,6 +238,9 @@ export default {
     handleEdit(row) {
       this.form = row
       this.updateDialogFormVisible = true
+    },
+    isNumeric(str) {
+      return /^\d+$/.test(str);
     }
   }
 }

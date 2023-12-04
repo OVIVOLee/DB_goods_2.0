@@ -10,8 +10,6 @@
            @select="handleSelect"
   >
 
-
-
     <div style="height: 60px; line-height: 60px; text-align: center">
       <img src="../assets/logo.png" alt="" style="width: 20px; position: relative; top: 5px; margin-right: 5px">
       <b style="color: white" v-show="logoTextShow">商品管理系统</b>
@@ -38,7 +36,7 @@
       </template>
     </el-menu-item>
 
-    <el-menu-item style="color: white">
+    <el-menu-item style="color: white" index="/sale">
       <template slot="title">
         <i class="el-icon-bangzhu"></i>
         <span slot="title">销售记录</span>
