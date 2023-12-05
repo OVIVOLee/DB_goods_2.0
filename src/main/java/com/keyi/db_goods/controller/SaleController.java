@@ -135,8 +135,8 @@ public class SaleController {
         writer.addHeaderAlias("saleId", "订单编号");
         writer.addHeaderAlias("goodId", "商品编号");
         writer.addHeaderAlias("clientId", "客户编号");
-        writer.addHeaderAlias("saleNum", "销售价格");
-        writer.addHeaderAlias("salePrice", "销售价格");
+        writer.addHeaderAlias("saleNum", "销售总数");
+        writer.addHeaderAlias("salePrice", "销售单价");
         writer.addHeaderAlias("saleSum", "销售总价");
         writer.addHeaderAlias("saleDate", "销售日期");
         writer.setOnlyAlias(true);
