@@ -15,6 +15,13 @@
       <b style="color: white" v-show="logoTextShow">商品管理系统</b>
     </div>
 
+    <el-menu-item style="color: white" index="/echarts">
+      <template slot="title">
+        <i class="el-icon-pie-chart"></i>
+        <span slot="title">数据分析</span>
+      </template>
+    </el-menu-item>
+
     <el-menu-item style="color: white" index="/client">
       <template slot="title">
         <i class="el-icon-user"></i>

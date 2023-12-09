@@ -45,7 +45,7 @@ export default {
             if (!res) {
               this.$message.error("用户名或密码错误")
             } else {
-              this.$router.push("/client")
+              this.$router.push("/echarts")
             }
           })
         } else {

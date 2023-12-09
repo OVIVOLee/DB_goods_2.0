@@ -7,6 +7,7 @@ import store from "@/store";
 import Restock from "@/views/Restock.vue";
 import Sale from "@/views/Sale.vue";
 import Login from "@/views/Login.vue";
+import Echarts from "@/views/Echarts.vue";
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,7 @@ const routes = [
     component: Manage,
     redirect: "/login",
     children: [
+      { path:'/echarts', name: '数据分析', component: Echarts },
       { path:'/client', name: '用户管理', component: User },
       { path:'/good', name: '商品管理', component: Good },
       { path:'/restock', name: '进货记录', component: Restock },
