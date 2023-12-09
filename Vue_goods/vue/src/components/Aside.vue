@@ -15,7 +15,7 @@
       <b style="color: white" v-show="logoTextShow">商品管理系统</b>
     </div>
 
-    <el-menu-item style="color: white" index="/user">
+    <el-menu-item style="color: white" index="/client">
       <template slot="title">
         <i class="el-icon-user"></i>
         <span slot="title">客户管理</span>
